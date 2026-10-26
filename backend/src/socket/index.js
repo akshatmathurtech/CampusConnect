@@ -55,6 +55,7 @@ function initSocket(httpServer) {
   });
 
   io.on('connection', (socket) => {
+    socket.join(`user:${socket.data.userId}`);
     const userId = socket.user._id.toString();
 
     // Join personal room for notifications and conversation updates
@@ -259,6 +260,18 @@ function initSocket(httpServer) {
   return io;
 }
 
+function emitToUser(userId, event, payload) {
+  if (io) io.to(`user:${userId}`).emit(event, payload);
+}
+
+function closeSocket() {
+  if (!io) return Promise.resolve();
+  const instance = io;
+  io = undefined;
+  return new Promise((resolve) => instance.close(resolve));
+}
+
+module.exports = { initializeSocket, emitToUser, closeSocket };
 function getIO() {
   return io;
 }

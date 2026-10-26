@@ -16,7 +16,7 @@ exports.protect = asyncHandler(async (req, _res, next) => {
     throw new ApiError(401, 'Session expired or invalid. Please log in again.');
   }
 
-  const user = await User.findById(decoded.id);
+  const user = await User.findById(decoded.id).select('+role');
   if (!user) throw new ApiError(401, 'Account no longer exists.');
   req.user = user;
   next();

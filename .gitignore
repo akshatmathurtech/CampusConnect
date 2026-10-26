@@ -3,6 +3,7 @@ node_modules/
 .env.local
 dist/
 coverage/
+backend/uploads/
 .DS_Store
 *.log
 *.zip

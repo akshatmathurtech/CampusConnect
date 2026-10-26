@@ -23,6 +23,9 @@ exports.errorHandler = (err, _req, res, _next) => {
   } else if (err.type === 'entity.parse.failed') {
     status = 400;
     message = 'Invalid JSON body.';
+  } else if (err.name === 'MulterError') {
+    status = err.code === 'LIMIT_FILE_SIZE' ? 413 : 400;
+    message = err.code === 'LIMIT_FILE_SIZE' ? 'Image must be 5 MB or smaller.' : 'Invalid image upload.';
   }
 
   if (status >= 500) {

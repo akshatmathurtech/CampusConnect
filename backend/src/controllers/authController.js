@@ -14,7 +14,7 @@ exports.register = asyncHandler(async (req, res) => {
 // POST /api/auth/login
 exports.login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  const user = await User.findOne({ email }).select('+password');
+  const user = await User.findOne({ email }).select('+password +role');
   // Same message for unknown email / wrong password so accounts can't be enumerated.
   if (!user || !(await user.matchPassword(password))) throw new ApiError(401, 'Invalid email or password.');
   res.json({ success: true, data: { token: generateToken(user._id), user } });

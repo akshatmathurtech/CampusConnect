@@ -16,6 +16,7 @@ const userSchema = new mongoose.Schema(
     skills: { type: [String], default: [] },
     interests: { type: [String], default: [] },
     achievements: { type: [String], default: [] },
+    role: { type: String, enum: ['student', 'admin'], default: 'student', select: false },
     github: { type: String, trim: true, default: '' },
     linkedin: { type: String, trim: true, default: '' },
     portfolio: { type: String, trim: true, default: '' },

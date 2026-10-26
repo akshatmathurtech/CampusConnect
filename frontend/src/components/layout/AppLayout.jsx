@@ -1,21 +1,25 @@
 import { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { Flag, GraduationCap, LayoutDashboard, LogOut, Menu, Newspaper, Search, User, Users, X } from 'lucide-react';
 import { GraduationCap, LayoutDashboard, LogOut, Menu, MessageSquare, Search, User, Users, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import Avatar from '../common/Avatar';
+import NotificationBell from '../notifications/NotificationBell';
 
 // Only links to pages that exist. New phases add their links here.
 const links = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/feed', label: 'Feed', icon: Newspaper },
   { to: '/students', label: 'Students', icon: Users },
   { to: '/messages', label: 'Messages', icon: MessageSquare },
   { to: '/profile', label: 'My Profile', icon: User },
 ];
 
-function NavLinks({ onNavigate }) {
+function NavLinks({ onNavigate, isAdmin }) {
+  const visibleLinks = isAdmin ? [...links, { to: '/admin/reports', label: 'Reports', icon: Flag }] : links;
   return (
     <nav className="space-y-1" aria-label="Main">
-      {links.map(({ to, label, icon: Icon }) => (
+      {visibleLinks.map(({ to, label, icon: Icon }) => (
         <NavLink
           key={to}
           to={to}
@@ -57,7 +61,7 @@ export default function AppLayout() {
       {/* Desktop sidebar */}
       <aside className="fixed inset-y-0 left-0 hidden w-60 flex-col border-r border-slate-200 bg-white p-4 lg:flex">
         <div className="mb-6 px-2"><Brand /></div>
-        <NavLinks />
+        <NavLinks isAdmin={user.role === 'admin'} />
       </aside>
 
       {/* Mobile drawer */}
@@ -69,7 +73,7 @@ export default function AppLayout() {
               <Brand />
               <button onClick={() => setOpen(false)} aria-label="Close menu"><X className="h-5 w-5" /></button>
             </div>
-            <NavLinks onNavigate={() => setOpen(false)} />
+            <NavLinks isAdmin={user.role === 'admin'} onNavigate={() => setOpen(false)} />
           </aside>
         </div>
       )}
@@ -88,6 +92,7 @@ export default function AppLayout() {
             />
           </form>
           <div className="ml-auto flex items-center gap-3">
+            <NotificationBell />
             <button onClick={() => navigate('/profile')} aria-label="My profile"><Avatar user={user} size={32} /></button>
             <button onClick={handleLogout} className="flex items-center gap-1 text-sm text-slate-600 hover:text-red-600">
               <LogOut className="h-4 w-4" aria-hidden="true" /> <span className="hidden sm:inline">Logout</span>
